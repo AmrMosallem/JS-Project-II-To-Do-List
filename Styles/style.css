@@ -29,7 +29,7 @@ body {
   justify-content: center;
 }
 main {
-  padding: 30px 30px;
+  padding: 30px 40px;
   margin: 0px 220px;
   /* background: var(--l3); */
   box-sizing: border-box;
@@ -73,13 +73,13 @@ main *::selection {
 }
 #add-input::placeholder {
   color: var(--l1);
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 #add-button {
-  font-size: 1rem;
+  font-size: 1.9rem;
   font-weight: bold;
   border: none;
-  padding: 10px;
+  padding: 2px 12px;
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
   border: 2px solid var(--l3);
@@ -167,7 +167,7 @@ main *::selection {
 }
 .task-buttons i:hover {
   background-color: var(--l1);
-  color: white;
+  color: var(--l3);
 }
 
 hr {
@@ -175,3 +175,11 @@ hr {
   border: 1.5px solid var(--l2);
   border-radius: 10px;
 }
+/*
+ #logo{
+  color: var(--l3);
+
+  border-radius: 10px;
+  font-size: 14px;
+
+} */
