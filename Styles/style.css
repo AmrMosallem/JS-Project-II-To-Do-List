@@ -75,8 +75,9 @@ main *::selection {
   color: var(--l1);
   font-size: 1rem;
 }
+
 #add-button {
-  font-size: 1.9rem;
+  font-size: 1.5rem;
   font-weight: bold;
   border: none;
   padding: 2px 12px;
@@ -97,6 +98,10 @@ main *::selection {
   font-size: 1rem;
   text-align: center;
   min-height: 20px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #main-list,
 #completed-list {
@@ -106,8 +111,7 @@ main *::selection {
   border-radius: 5px;
   width: 100%;
 }
-.task,
-.completed-task {
+.task-text {
   display: flex;
   align-items: center;
   column-gap: 10px;
@@ -121,14 +125,9 @@ main *::selection {
 
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
   transition: 0.2s;
-
-
-
-}
-.completed-task {
-  background: var(--l2);
 }
 .completed-task .task-text {
+  background: var(--l2);
   text-decoration: line-through;
 }
 
@@ -147,11 +146,11 @@ main *::selection {
     display: none;
   }
 }
-.task-text {
-  flex: 1;
-}
+
 .task-buttons {
+  margin-top: 5px;
   display: flex;
+  justify-content: end;
 }
 .task-buttons i {
   border: none;
@@ -159,15 +158,15 @@ main *::selection {
   padding: 5px;
   cursor: pointer;
   background: none;
-  color: var(--l1);
+  color: var(--l3);
 
   font-weight: bold;
   transition: 0.2s;
-  font-size: small;
+  font-size: medium;
 }
 .task-buttons i:hover {
-  background-color: var(--l1);
-  color: var(--l3);
+  background-color: var(--l3);
+  color: var(--l1);
 }
 
 hr {
@@ -175,6 +174,76 @@ hr {
   border: 1.5px solid var(--l2);
   border-radius: 10px;
 }
+.confirm-screen {
+  position: fixed;
+  display: none;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  opacity: 0;
+  animation: fade-in 0.4s forwards;
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.confirm-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30%;
+  gap: 20px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+.confirm-task-text{
+  font-size: 20px;
+  font-weight: bold;
+  font-style: italic;
+}
+.confirm-buttons button {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: none;
+  color: var(--l3);
+  border: 2px solid var(--l3);
+  cursor: pointer;
+  transition: 0.3s;
+}
+.confirm-buttons button:hover {
+  background: var(--l3);
+  color: var(--l1);
+}
+
+#cancel {
+  background: var(--l3);
+  color: var(--l1);
+}
+
 /*
  #logo{
   color: var(--l3);

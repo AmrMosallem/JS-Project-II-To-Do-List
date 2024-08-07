@@ -3,14 +3,22 @@ let mainList = document.getElementById("main-list");
 let completedList = document.getElementById("completed-list");
 let addInput = document.getElementById("add-input");
 let addButton = document.getElementById("add-button");
+let confirmScreen = document.querySelector(".confirm-screen");
 
+let confirmTaskText = document.querySelector(".confirm-task-text");
+let confirmButton = document.getElementById("confirm");
+let cancelButton = document.getElementById("cancel");
 let taskText,
   taskTextSpan,
   checkButton,
+  editButton,
   deleteButton,
   buttonsContainer,
   task,
-  taskArray = [];
+  taskArray = [],
+  isEditing = false;
+
+addButton.onclick = buttonClick;
 
 function buttonCheck() {
   if (this.classList.contains("fa-check")) {
@@ -52,27 +60,82 @@ function buttonCheck() {
   updateStatus();
 }
 function buttonDelete() {
-  taskArray.forEach((task) => {
-    if (
-      task.taskText ==
-      this.parentElement.parentElement.querySelector("span").innerText
-    ) {
-      taskArray.splice(taskArray.indexOf(task), 1);
-      return;
-    }
+  deleteButtonTemp = this;
+  confirmScreen.style.display = "grid";
+
+  confirmTaskText.innerText = `'${
+    deleteButtonTemp.parentElement.parentElement.querySelector("span").innerText
+  }'`;
+  confirmButton.onclick = function () {
+    taskArray.forEach((task) => {
+      if (
+        task.taskText ==
+        deleteButtonTemp.parentElement.parentElement.querySelector("span")
+          .innerText
+      ) {
+        taskArray.splice(taskArray.indexOf(task), 1);
+        return;
+      }
+    });
+    localStorage.setItem("tasks", JSON.stringify(taskArray));
+    deleteButtonTemp.parentElement.parentElement.remove();
+    confirmScreen.style.display = "none";
+    mainStatus.innerHTML = "Task Deleted";
+    setTimeout(updateStatus, 2000);
+  };
+  cancelButton.onclick = function () {
+    confirmScreen.style.display = "none";
+  };
+}
+
+function buttonEdit() {
+  addButton.classList = "fa-solid fa-check";
+  addInput.scrollIntoView({
+    behavior: "smooth",
+    block: "center",
   });
-  localStorage.setItem("tasks", JSON.stringify(taskArray));
-  this.parentElement.parentElement.remove();
-  updateStatus();
+  addInput.focus();
+  addInput.value =
+    this.parentElement.parentElement.querySelector("span").innerText;
+  editButtonTemp = this;
+  mainStatus.innerHTML = `Editing: <strong>${ this.parentElement.parentElement.querySelector("span").innerText} </strong>`;
+  addButton.onclick = function () {
+    if (addInput.value == "") {
+      editButtonTemp.nextSibling.click();
+    } else {
+      for (let i = 0; i < taskArray.length; i++) {
+        if (
+          taskArray[i].taskText ==
+          editButtonTemp.parentElement.parentElement.querySelector("span")
+            .innerText
+        ) {
+          taskArray[i].taskText = addInput.value;
+          break;
+        }
+      }
+      editButtonTemp.parentElement.parentElement.querySelector(
+        "span"
+      ).innerText = addInput.value;
+      localStorage.setItem("tasks", JSON.stringify(taskArray));
+      updateStatus();
+    }
+    addInput.value = "";
+    addButton.onclick = buttonClick;    addButton.classList = "fa-solid fa-plus";
+  };
+
 }
 
 function addTask(taskText, isCompleted) {
   taskTextSpan = document.createElement("span");
   taskTextSpan.classList.add("task-text");
   checkButton = document.createElement("i");
-  checkButton.onclick = buttonCheck;
+  checkButton.onmousedown = buttonCheck;
   if (!isCompleted) checkButton.classList.add("fa-solid", "fa-check");
   else checkButton.classList.add("fa-solid", "fa-arrow-up");
+
+  editButton = document.createElement("i");
+  editButton.classList.add("fa-solid", "fa-pencil");
+  editButton.onclick = buttonEdit;
 
   deleteButton = document.createElement("i");
   deleteButton.classList.add("fa-solid", "fa-trash");
@@ -80,6 +143,7 @@ function addTask(taskText, isCompleted) {
   buttonsContainer = document.createElement("div");
   buttonsContainer.classList.add("task-buttons");
   buttonsContainer.append(checkButton);
+  buttonsContainer.append(editButton);
   buttonsContainer.append(deleteButton);
 
   task = document.createElement("div");
@@ -126,11 +190,10 @@ addInput.addEventListener("keyup", function (event) {
     addButton.click();
   }
 });
-
-addButton.onclick = function () {
+function buttonClick() {
   if (addInput.value == "") {
     mainStatus.innerHTML = "Please enter a task.";
-    setTimeout(updateStatus,1500)
+    setTimeout(updateStatus, 1500);
     return;
   }
   mainStatus.innerHTML = "";
@@ -142,4 +205,4 @@ addButton.onclick = function () {
   localStorage.setItem("tasks", JSON.stringify(taskArray));
   updateStatus();
   addInput.value = "";
-};
+}
