@@ -103,10 +103,10 @@ function buttonEdit() {
   } </strong>`;
   addButton.onclick = function () {
     if (
-      addInput.value.split("  ").join("") == " " ||
-      addInput.value.split("  ").join("") == ""
+      removeSpaces(addInput.value) == ""
     ) {
       editButtonTemp.nextSibling.click();
+      updateStatus();
     } else {
       for (let i = 0; i < taskArray.length; i++) {
         if (
