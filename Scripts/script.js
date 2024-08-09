@@ -98,9 +98,14 @@ function buttonEdit() {
   addInput.value =
     this.parentElement.parentElement.querySelector("span").innerText;
   editButtonTemp = this;
-  mainStatus.innerHTML = `Editing: <strong>${ this.parentElement.parentElement.querySelector("span").innerText} </strong>`;
+  mainStatus.innerHTML = `Editing: <strong>${
+    this.parentElement.parentElement.querySelector("span").innerText
+  } </strong>`;
   addButton.onclick = function () {
-    if (addInput.value == "") {
+    if (
+      addInput.value.split("  ").join("") == " " ||
+      addInput.value.split("  ").join("") == ""
+    ) {
       editButtonTemp.nextSibling.click();
     } else {
       for (let i = 0; i < taskArray.length; i++) {
@@ -109,7 +114,13 @@ function buttonEdit() {
           editButtonTemp.parentElement.parentElement.querySelector("span")
             .innerText
         ) {
-          taskArray[i].taskText = addInput.value;
+          editButtonTemp.parentElement.parentElement.querySelector(
+            "span"
+          ).innerText = addInput.value;
+          taskArray[i].taskText =
+            editButtonTemp.parentElement.parentElement.querySelector(
+              "span"
+            ).innerText;
           break;
         }
       }
@@ -120,24 +131,24 @@ function buttonEdit() {
       updateStatus();
     }
     addInput.value = "";
-    addButton.onclick = buttonClick;    addButton.classList = "fa-solid fa-plus";
+    addButton.onclick = buttonClick;
+    addButton.classList = "fa-solid fa-plus";
   };
-
 }
 
 function addTask(taskText, isCompleted) {
   taskTextSpan = document.createElement("span");
   taskTextSpan.classList.add("task-text");
-  checkButton = document.createElement("i");
+  checkButton = document.createElement("button");
   checkButton.onmousedown = buttonCheck;
   if (!isCompleted) checkButton.classList.add("fa-solid", "fa-check");
   else checkButton.classList.add("fa-solid", "fa-arrow-up");
 
-  editButton = document.createElement("i");
+  editButton = document.createElement("button");
   editButton.classList.add("fa-solid", "fa-pencil");
   editButton.onclick = buttonEdit;
 
-  deleteButton = document.createElement("i");
+  deleteButton = document.createElement("button");
   deleteButton.classList.add("fa-solid", "fa-trash");
   deleteButton.onclick = buttonDelete;
   buttonsContainer = document.createElement("div");
@@ -180,8 +191,10 @@ function updateStatus() {
 if (localStorage.tasks) {
   taskArray = JSON.parse(localStorage.getItem("tasks"));
   taskArray.forEach((task) => {
+    task.taskText = removeSpaces(task.taskText);
     addTask(task.taskText, task.isCompleted);
   });
+  localStorage.setItem("tasks", JSON.stringify(taskArray));
 }
 updateStatus();
 
@@ -191,7 +204,7 @@ addInput.addEventListener("keyup", function (event) {
   }
 });
 function buttonClick() {
-  if (addInput.value == "") {
+  if (removeSpaces(addInput.value) == "") {
     mainStatus.innerHTML = "Please enter a task.";
     setTimeout(updateStatus, 1500);
     return;
@@ -200,9 +213,22 @@ function buttonClick() {
 
   addTask(addInput.value, false);
   if (taskArray)
-    taskArray.push({ taskText: taskTextSpan.innerText, isCompleted: false });
-  else taskArray = [{ taskText: taskTextSpan.innerText, isCompleted: false }];
+    taskArray.push({ taskText: removeSpaces(addInput.value), isCompleted: false });
+  else taskArray = [{ taskText: removeSpaces(addInput.value), isCompleted: false }];
   localStorage.setItem("tasks", JSON.stringify(taskArray));
   updateStatus();
   addInput.value = "";
+}
+
+function removeSpaces(str) {
+  // This line of code uses a regular expression with the global ("g") and case-insensitive ("i") flags to replace all occurrences of one or more whitespace characters with a single space character. It then trims any leading or trailing whitespace from the resulting string.
+  // 
+  // The regular expression /\s+/g matches one or more whitespace characters (such as spaces, tabs, or line breaks) in the string. The "g" flag makes the regular expression global, so it matches all occurrences in the string, not just the first one.
+  // 
+  // The replace() method is then called on the string with the regular expression and a replacement string. In this case, the replacement string is a single space character.
+  // 
+  // The trim() method is then called on the resulting string to remove any leading or trailing whitespace.
+  // 
+  // The resulting string is the original string with all consecutive whitespace characters replaced by a single space character, and any leading or trailing whitespace removed.
+  return str.replace(/\s+/g,' ').trim();
 }

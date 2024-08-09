@@ -152,7 +152,7 @@ main *::selection {
   display: flex;
   justify-content: end;
 }
-.task-buttons i {
+.task-buttons button {
   border: none;
   border-radius: 5px;
   padding: 5px;
@@ -164,7 +164,7 @@ main *::selection {
   transition: 0.2s;
   font-size: medium;
 }
-.task-buttons i:hover {
+.task-buttons button:hover {
   background-color: var(--l3);
   color: var(--l1);
 }
@@ -178,7 +178,7 @@ hr {
   position: fixed;
   display: none;
   place-items: center;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(5px);
   top: 0px;
   bottom: 0px;
@@ -207,10 +207,11 @@ hr {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 30%;
+  width: 40%;
+  min-width: 250px;
   gap: 20px;
   padding: 20px;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 10px;
   font-size: 24px;
