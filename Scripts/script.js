@@ -15,8 +15,7 @@ let taskText,
   deleteButton,
   buttonsContainer,
   task,
-  taskArray = [],
-  isEditing = false;
+  taskArray = [];
 
 addButton.onclick = buttonClick;
 
@@ -102,9 +101,7 @@ function buttonEdit() {
     this.parentElement.parentElement.querySelector("span").innerText
   } </strong>`;
   addButton.onclick = function () {
-    if (
-      removeSpaces(addInput.value) == ""
-    ) {
+    if (removeSpaces(addInput.value) == "") {
       editButtonTemp.nextSibling.click();
       updateStatus();
     } else {
@@ -213,8 +210,14 @@ function buttonClick() {
 
   addTask(addInput.value, false);
   if (taskArray)
-    taskArray.push({ taskText: removeSpaces(addInput.value), isCompleted: false });
-  else taskArray = [{ taskText: removeSpaces(addInput.value), isCompleted: false }];
+    taskArray.push({
+      taskText: removeSpaces(addInput.value),
+      isCompleted: false,
+    });
+  else
+    taskArray = [
+      { taskText: removeSpaces(addInput.value), isCompleted: false },
+    ];
   localStorage.setItem("tasks", JSON.stringify(taskArray));
   updateStatus();
   addInput.value = "";
@@ -222,13 +225,13 @@ function buttonClick() {
 
 function removeSpaces(str) {
   // This line of code uses a regular expression with the global ("g") and case-insensitive ("i") flags to replace all occurrences of one or more whitespace characters with a single space character. It then trims any leading or trailing whitespace from the resulting string.
-  // 
+  //
   // The regular expression /\s+/g matches one or more whitespace characters (such as spaces, tabs, or line breaks) in the string. The "g" flag makes the regular expression global, so it matches all occurrences in the string, not just the first one.
-  // 
+  //
   // The replace() method is then called on the string with the regular expression and a replacement string. In this case, the replacement string is a single space character.
-  // 
+  //
   // The trim() method is then called on the resulting string to remove any leading or trailing whitespace.
-  // 
+  //
   // The resulting string is the original string with all consecutive whitespace characters replaced by a single space character, and any leading or trailing whitespace removed.
-  return str.replace(/\s+/g,' ').trim();
+  return str.replace(/\s+/g, " ").trim();
 }
