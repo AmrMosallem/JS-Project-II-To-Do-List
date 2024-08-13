@@ -19,11 +19,25 @@ let taskText,
 
 addButton.onclick = buttonClick;
 
+let search = document.getElementById("search");
+search.addEventListener("input", function () {
+  let value = search.value;
+  let re = new RegExp(value, "gi");
+  document.querySelectorAll(".task").forEach((task) => {
+    let text = task.querySelector("span").innerText;
+    if (text.match(re)) {
+      task.style.display = "block";
+    } else {
+      task.style.display = "none";
+    }
+  });
+});
+
 function buttonCheck() {
   if (this.classList.contains("fa-check")) {
     completedList.append(this.parentElement.parentElement);
     this.parentElement.parentElement.classList.add("completed-task");
-    this.parentElement.parentElement.classList.remove("task");
+   
     this.classList.remove("fa-check");
     this.classList.add("fa-arrow-up");
     for (let i = 0; i < taskArray.length; i++) {
@@ -38,7 +52,6 @@ function buttonCheck() {
     }
   } else {
     mainList.append(this.parentElement.parentElement);
-    this.parentElement.parentElement.classList.add("task");
     this.parentElement.parentElement.classList.remove("completed-task");
     this.classList.remove("fa-arrow-up");
     this.classList.add("fa-check");
@@ -155,8 +168,8 @@ function addTask(taskText, isCompleted) {
   buttonsContainer.append(deleteButton);
 
   task = document.createElement("div");
-  if (!isCompleted) task.classList.add("task");
-  else task.classList.add("completed-task");
+  task.classList.add("task");
+  if (isCompleted) task.classList.add("completed-task");
   taskTextSpan.innerText = taskText;
   task.append(taskTextSpan);
   task.append(buttonsContainer);

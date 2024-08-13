@@ -103,6 +103,26 @@ main *::selection {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+#search {
+  margin-top: -10px;
+  min-width: 100px;
+  width: 75%;
+  font-size: 0.9rem;
+  border: none;
+  padding: 7px;
+  border: 2px solid var(--l3);
+  border-radius: 25px;
+  outline: none;
+  overflow-x: visible;
+  background: var(--l3);
+  color: var(--l1);
+}
+#search::placeholder {
+  color: var(--l1);
+  font-size: 0.9rem;
+}
+
+
 #main-list,
 #completed-list {
   display: flex;
@@ -219,7 +239,7 @@ hr {
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
   text-align: center;
 }
-.confirm-task-text{
+.confirm-task-text {
   font-size: 20px;
   font-weight: bold;
   font-style: italic;
