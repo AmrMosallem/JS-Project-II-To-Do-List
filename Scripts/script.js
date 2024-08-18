@@ -3,72 +3,46 @@ let mainList = document.getElementById("main-list");
 let completedList = document.getElementById("completed-list");
 let addInput = document.getElementById("add-input");
 let addButton = document.getElementById("add-button");
+let search = document.getElementById("search");
 let confirmScreen = document.querySelector(".confirm-screen");
-
 let confirmTaskText = document.querySelector(".confirm-task-text");
 let confirmButton = document.getElementById("confirm");
 let cancelButton = document.getElementById("cancel");
-let taskText,
-  taskTextSpan,
-  checkButton,
-  editButton,
-  deleteButton,
-  buttonsContainer,
-  task,
-  taskArray = [];
 
-addButton.onclick = buttonClick;
-
-let search = document.getElementById("search");
-search.addEventListener("input", function () {
-  let value = search.value;
-  let re = new RegExp(value, "gi");
+function saveToLocalStorage() {
+  let taskArray = [];
   document.querySelectorAll(".task").forEach((task) => {
-    let text = task.querySelector("span").innerText;
-    if (text.match(re)) {
-      task.style.display = "block";
-    } else {
-      task.style.display = "none";
-    }
+    taskArray.push({
+      taskText: task.querySelector("span").innerText,
+      isCompleted: task.classList.contains("completed-task"),
+    });
   });
-});
+  localStorage.setItem("tasks", JSON.stringify(taskArray));
+}
+function buttonClick() {
+  if (removeSpaces(addInput.value) == "") {
+    mainStatus.innerHTML = "Please enter a task.";
+    setTimeout(updateStatus, 1500);
+    return;
+  }
+  mainStatus.innerHTML = "";
 
+  addTask(removeSpaces(addInput.value), false);
+  saveToLocalStorage();
+  updateStatus();
+  addInput.value = "";
+}
 function buttonCheck() {
   if (this.classList.contains("fa-check")) {
     completedList.append(this.parentElement.parentElement);
     this.parentElement.parentElement.classList.add("completed-task");
-   
-    this.classList.remove("fa-check");
-    this.classList.add("fa-arrow-up");
-    for (let i = 0; i < taskArray.length; i++) {
-      if (
-        taskArray[i].taskText ==
-          this.parentElement.parentElement.querySelector("span").innerText &&
-        !taskArray[i].isCompleted
-      ) {
-        taskArray[i].isCompleted = true;
-        break;
-      }
-    }
+    this.classList = "fa-solid fa-arrow-up";
   } else {
     mainList.append(this.parentElement.parentElement);
     this.parentElement.parentElement.classList.remove("completed-task");
-    this.classList.remove("fa-arrow-up");
-    this.classList.add("fa-check");
-
-    for (let i = 0; i < taskArray.length; i++) {
-      if (
-        taskArray[i].taskText ==
-          this.parentElement.parentElement.querySelector("span").innerText &&
-        taskArray[i].isCompleted
-      ) {
-        taskArray[i].isCompleted = false;
-        break;
-      }
-    }
+    this.classList = "fa-solid fa-check";
   }
-
-  localStorage.setItem("tasks", JSON.stringify(taskArray));
+  saveToLocalStorage();
   updateStatus();
 }
 function buttonDelete() {
@@ -79,18 +53,8 @@ function buttonDelete() {
     deleteButtonTemp.parentElement.parentElement.querySelector("span").innerText
   }'`;
   confirmButton.onclick = function () {
-    taskArray.forEach((task) => {
-      if (
-        task.taskText ==
-        deleteButtonTemp.parentElement.parentElement.querySelector("span")
-          .innerText
-      ) {
-        taskArray.splice(taskArray.indexOf(task), 1);
-        return;
-      }
-    });
-    localStorage.setItem("tasks", JSON.stringify(taskArray));
     deleteButtonTemp.parentElement.parentElement.remove();
+    saveToLocalStorage();
     confirmScreen.style.display = "none";
     mainStatus.innerHTML = "Task Deleted";
     setTimeout(updateStatus, 2000);
@@ -99,7 +63,6 @@ function buttonDelete() {
     confirmScreen.style.display = "none";
   };
 }
-
 function buttonEdit() {
   addButton.classList = "fa-solid fa-check";
   addInput.scrollIntoView({
@@ -118,26 +81,10 @@ function buttonEdit() {
       editButtonTemp.nextSibling.click();
       updateStatus();
     } else {
-      for (let i = 0; i < taskArray.length; i++) {
-        if (
-          taskArray[i].taskText ==
-          editButtonTemp.parentElement.parentElement.querySelector("span")
-            .innerText
-        ) {
-          editButtonTemp.parentElement.parentElement.querySelector(
-            "span"
-          ).innerText = addInput.value;
-          taskArray[i].taskText =
-            editButtonTemp.parentElement.parentElement.querySelector(
-              "span"
-            ).innerText;
-          break;
-        }
-      }
       editButtonTemp.parentElement.parentElement.querySelector(
         "span"
       ).innerText = addInput.value;
-      localStorage.setItem("tasks", JSON.stringify(taskArray));
+      saveToLocalStorage();
       updateStatus();
     }
     addInput.value = "";
@@ -145,29 +92,27 @@ function buttonEdit() {
     addButton.classList = "fa-solid fa-plus";
   };
 }
-
 function addTask(taskText, isCompleted) {
-  taskTextSpan = document.createElement("span");
+  let taskTextSpan = document.createElement("span");
   taskTextSpan.classList.add("task-text");
-  checkButton = document.createElement("button");
+  let checkButton = document.createElement("button");
   checkButton.onmousedown = buttonCheck;
   if (!isCompleted) checkButton.classList.add("fa-solid", "fa-check");
   else checkButton.classList.add("fa-solid", "fa-arrow-up");
 
-  editButton = document.createElement("button");
+  let editButton = document.createElement("button");
   editButton.classList.add("fa-solid", "fa-pencil");
   editButton.onclick = buttonEdit;
-
-  deleteButton = document.createElement("button");
+  let deleteButton = document.createElement("button");
   deleteButton.classList.add("fa-solid", "fa-trash");
   deleteButton.onclick = buttonDelete;
-  buttonsContainer = document.createElement("div");
+  let buttonsContainer = document.createElement("div");
   buttonsContainer.classList.add("task-buttons");
   buttonsContainer.append(checkButton);
   buttonsContainer.append(editButton);
   buttonsContainer.append(deleteButton);
 
-  task = document.createElement("div");
+  let task = document.createElement("div");
   task.classList.add("task");
   if (isCompleted) task.classList.add("completed-task");
   taskTextSpan.innerText = taskText;
@@ -176,10 +121,8 @@ function addTask(taskText, isCompleted) {
   if (!isCompleted) mainList.append(task);
   else completedList.append(task);
 }
-function countUncompletedTasks() {
-  return taskArray.length - countCompletedTasks();
-}
 function countCompletedTasks() {
+  let taskArray = JSON.parse(localStorage.getItem("tasks"));
   if (!taskArray.length) return 0;
   let count = 0;
 
@@ -189,62 +132,40 @@ function countCompletedTasks() {
   return count;
 }
 function updateStatus() {
+  let taskArray = JSON.parse(localStorage.getItem("tasks"));
   if (!taskArray.length) mainStatus.innerHTML = "No tasks added.";
-  else if (countUncompletedTasks() == 0)
+  else if (taskArray.length - countCompletedTasks() == 0)
     mainStatus.innerHTML = "All tasks completed.";
   else
     mainStatus.innerHTML = `${countCompletedTasks()} out of ${
       taskArray.length
     } tasks completed.`;
 }
-
+function removeSpaces(str) {
+  return str.replace(/\s+/g, " ").trim();
+}
 if (localStorage.tasks) {
-  taskArray = JSON.parse(localStorage.getItem("tasks"));
-  taskArray.forEach((task) => {
+  JSON.parse(localStorage.getItem("tasks")).forEach((task) => {
     task.taskText = removeSpaces(task.taskText);
     addTask(task.taskText, task.isCompleted);
   });
-  localStorage.setItem("tasks", JSON.stringify(taskArray));
 }
 updateStatus();
-
+addButton.onclick = buttonClick;
 addInput.addEventListener("keyup", function (event) {
   if (event.keyCode === 13) {
     addButton.click();
   }
 });
-function buttonClick() {
-  if (removeSpaces(addInput.value) == "") {
-    mainStatus.innerHTML = "Please enter a task.";
-    setTimeout(updateStatus, 1500);
-    return;
-  }
-  mainStatus.innerHTML = "";
-
-  addTask(addInput.value, false);
-  if (taskArray)
-    taskArray.push({
-      taskText: removeSpaces(addInput.value),
-      isCompleted: false,
-    });
-  else
-    taskArray = [
-      { taskText: removeSpaces(addInput.value), isCompleted: false },
-    ];
-  localStorage.setItem("tasks", JSON.stringify(taskArray));
-  updateStatus();
-  addInput.value = "";
-}
-
-function removeSpaces(str) {
-  // This line of code uses a regular expression with the global ("g") and case-insensitive ("i") flags to replace all occurrences of one or more whitespace characters with a single space character. It then trims any leading or trailing whitespace from the resulting string.
-  //
-  // The regular expression /\s+/g matches one or more whitespace characters (such as spaces, tabs, or line breaks) in the string. The "g" flag makes the regular expression global, so it matches all occurrences in the string, not just the first one.
-  //
-  // The replace() method is then called on the string with the regular expression and a replacement string. In this case, the replacement string is a single space character.
-  //
-  // The trim() method is then called on the resulting string to remove any leading or trailing whitespace.
-  //
-  // The resulting string is the original string with all consecutive whitespace characters replaced by a single space character, and any leading or trailing whitespace removed.
-  return str.replace(/\s+/g, " ").trim();
-}
+search.addEventListener("input", function () {
+  let value = search.value;
+  let re = new RegExp(value, "gi");
+  document.querySelectorAll(".task").forEach((task) => {
+    let text = task.querySelector("span").innerText;
+    if (text.match(re)) {
+      task.style.display = "block";
+    } else {
+      task.style.display = "none";
+    }
+  });
+});
