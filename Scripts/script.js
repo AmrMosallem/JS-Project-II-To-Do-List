@@ -132,7 +132,7 @@ function countCompletedTasks() {
   return count;
 }
 function updateStatus() {
-  let taskArray = JSON.parse(localStorage.getItem("tasks"));
+  let taskArray = JSON.parse(localStorage.getItem("tasks"))||[];
   if (!taskArray.length) mainStatus.innerHTML = "No tasks added.";
   else if (taskArray.length - countCompletedTasks() == 0)
     mainStatus.innerHTML = "All tasks completed.";
