@@ -23,14 +23,11 @@ body {
   color: var(--l3);
   font-family: "Noto Sans", sans-serif;
   min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  padding-top: 50px;
 }
 main {
   padding: 30px 40px;
-  margin: 0px 220px;
+  margin: 0px auto;
   /* background: var(--l3); */
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.4);
@@ -41,8 +38,12 @@ main {
   align-items: center;
   border-radius: 10px;
   gap: 20px;
-  border: 3px solid var(--l2);
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+  border: 2px solid var(--l3);
+  box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.8);
+  transition: all 0.5s;
+  min-height: 0;
+  overflow: hidden;
+
 }
 main *::selection {
   background: var(--l1);
@@ -131,18 +132,24 @@ main *::selection {
   border-radius: 5px;
   width: 100%;
 }
+.task{
+  transition: 0.4s;
+}
+.disappear{
+  opacity: 0;
+}
 .task-text {
   display: flex;
   align-items: center;
   column-gap: 10px;
-  padding: 10px;
+  padding:10px;
   height: 100%;
 
   color: var(--l1);
   background-color: var(--l3);
   font-weight: bold;
   border-radius: 5px;
-
+  box-sizing: border-box;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
   transition: 0.2s;
 }

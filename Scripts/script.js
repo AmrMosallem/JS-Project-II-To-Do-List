@@ -53,8 +53,16 @@ function buttonDelete() {
     deleteButtonTemp.parentElement.parentElement.querySelector("span").innerText
   }'`;
   confirmButton.onclick = function () {
+    document.querySelector("main").style.minHeight = `
+      ${
+        document.querySelector("main").scrollHeight -
+        deleteButtonTemp.parentElement.parentElement.scrollHeight
+      }px `;
     deleteButtonTemp.parentElement.parentElement.remove();
+    document.querySelector("main").style.maxHeight =
+      document.querySelector("main").style.minHeight;
     saveToLocalStorage();
+
     confirmScreen.style.display = "none";
     mainStatus.innerHTML = "Task Deleted";
     setTimeout(updateStatus, 2000);
@@ -120,6 +128,7 @@ function addTask(taskText, isCompleted) {
   task.append(buttonsContainer);
   if (!isCompleted) mainList.append(task);
   else completedList.append(task);
+  updateMainHeight();
 }
 function countCompletedTasks() {
   let taskArray = JSON.parse(localStorage.getItem("tasks"));
@@ -132,7 +141,7 @@ function countCompletedTasks() {
   return count;
 }
 function updateStatus() {
-  let taskArray = JSON.parse(localStorage.getItem("tasks"))||[];
+  let taskArray = JSON.parse(localStorage.getItem("tasks")) || [];
   if (!taskArray.length) mainStatus.innerHTML = "No tasks added.";
   else if (taskArray.length - countCompletedTasks() == 0)
     mainStatus.innerHTML = "All tasks completed.";
@@ -144,6 +153,7 @@ function updateStatus() {
 function removeSpaces(str) {
   return str.replace(/\s+/g, " ").trim();
 }
+
 if (localStorage.tasks) {
   JSON.parse(localStorage.getItem("tasks")).forEach((task) => {
     task.taskText = removeSpaces(task.taskText);
@@ -169,3 +179,12 @@ search.addEventListener("input", function () {
     }
   });
 });
+
+function updateMainHeight() {
+  const main = document.querySelector("main");
+  const height = main.scrollHeight;
+  main.style.maxHeight = `${height}px`;
+  main.style.minHeight = `${height}px`;
+}
+
+updateMainHeight();
